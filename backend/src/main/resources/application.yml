@@ -1,0 +1,101 @@
+server:
+  address: 0.0.0.0
+  port: ${PORT:8080}
+  shutdown: graceful
+  tomcat:
+    max-swallow-size: 10MB
+spring:
+  application:
+    name: evidencerag
+  servlet:
+    multipart:
+      max-file-size: ${APP_MAX_UPLOAD_BYTES:10485760}
+      max-request-size: ${APP_MAX_UPLOAD_BYTES:10485760}
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/evidencerag}
+    username: ${POSTGRES_USER:evidencerag}
+    password: ${POSTGRES_PASSWORD:change-me}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:3}
+      minimum-idle: ${DB_POOL_MIN_IDLE:0}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:10000}
+      validation-timeout: 5000
+  flyway:
+    enabled: true
+    url: ${FLYWAY_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/evidencerag}}
+    user: ${FLYWAY_USER:${POSTGRES_USER:evidencerag}}
+    password: ${FLYWAY_PASSWORD:${POSTGRES_PASSWORD:change-me}}
+    placeholders:
+      embedding_dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
+  ai:
+    model:
+      chat: ${CHAT_PROVIDER:ollama}
+      embedding: ${EMBEDDING_PROVIDER:ollama}
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      timeout: 45s
+      max-retries: 1
+      chat:
+        model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+        temperature: 0.1
+        max-completion-tokens: 600
+      embedding:
+        model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        model: ${OLLAMA_CHAT_MODEL:llama3.2}
+        options:
+          num-predict: 512
+          num-ctx: 4096
+          temperature: 0.1
+      embedding:
+        model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          model: ${GEMINI_CHAT_MODEL:gemini-2.5-flash}
+          temperature: 0.1
+          max-output-tokens: 600
+          response-mime-type: application/json
+        embedding:
+          api-key: ${GEMINI_API_KEY:}
+          text:
+            model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}
+            dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
+            task-type: RETRIEVAL_DOCUMENT
+    vectorstore:
+      pgvector:
+        initialize-schema: false
+        dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        table-name: vector_store
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+app:
+  security:
+    token: ${APP_API_TOKEN:}
+  cors-origin: ${APP_CORS_ORIGIN:http://localhost:5173}
+  max-upload-bytes: ${APP_MAX_UPLOAD_BYTES:10485760}
+  max-document-characters: 2000000
+  chunk-size: ${APP_CHUNK_SIZE:900}
+  chunk-overlap: ${APP_CHUNK_OVERLAP:120}
+  retrieval-top-k: ${APP_RETRIEVAL_TOP_K:6}
+  min-similarity: ${APP_MIN_SIMILARITY:0.72}
+  rate-limit-per-minute: ${APP_REQUESTS_PER_MINUTE:60}
+  document-visibility: ${APP_DOCUMENT_VISIBILITY:local}
+  embedding-model: ${APP_EMBEDDING_MODEL:${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}}
+  embedding-dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
+  public-demo-corpus-only: ${APP_PUBLIC_DEMO_CORPUS_ONLY:false}
+  max-concurrent-ai-requests: ${APP_MAX_CONCURRENT_AI_REQUESTS:2}

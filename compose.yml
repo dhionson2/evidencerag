@@ -1,0 +1,60 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-evidencerag}
+      POSTGRES_USER: ${POSTGRES_USER:-evidencerag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports: ["${DB_HOST_PORT:-5432}:5432"]
+    volumes: ["evidencerag-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-evidencerag} -d ${POSTGRES_DB:-evidencerag}"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  backend:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-evidencerag}
+      POSTGRES_USER: ${POSTGRES_USER:-evidencerag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      APP_API_TOKEN: ${APP_API_TOKEN:-}
+      APP_CORS_ORIGIN: ${APP_CORS_ORIGIN:-http://localhost:5173}
+      CHAT_PROVIDER: ${CHAT_PROVIDER:-ollama}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-ollama}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_CHAT_MODEL: ${GEMINI_CHAT_MODEL:-gemini-2.5-flash}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-001}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_CHAT_MODEL: ${OPENAI_CHAT_MODEL:-gpt-4o-mini}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-llama3.2}
+      OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      APP_EMBEDDING_MODEL: ${APP_EMBEDDING_MODEL:-nomic-embed-text}
+      APP_DOCUMENT_VISIBILITY: ${APP_DOCUMENT_VISIBILITY:-local}
+      APP_EMBEDDING_DIMENSIONS: ${APP_EMBEDDING_DIMENSIONS:-768}
+      APP_MAX_UPLOAD_BYTES: ${APP_MAX_UPLOAD_BYTES:-10485760}
+      APP_CHUNK_SIZE: ${APP_CHUNK_SIZE:-900}
+      APP_CHUNK_OVERLAP: ${APP_CHUNK_OVERLAP:-120}
+      APP_RETRIEVAL_TOP_K: ${APP_RETRIEVAL_TOP_K:-6}
+      APP_MIN_SIMILARITY: ${APP_MIN_SIMILARITY:-0.72}
+      APP_REQUESTS_PER_MINUTE: ${APP_REQUESTS_PER_MINUTE:-60}
+      APP_MAX_CONCURRENT_AI_REQUESTS: ${APP_MAX_CONCURRENT_AI_REQUESTS:-2}
+    ports: ["${API_HOST_PORT:-8080}:8080"]
+    depends_on:
+      db:
+        condition: service_healthy
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080}
+        VITE_DEMO_MODE: ${VITE_DEMO_MODE:-false}
+    ports: ["${WEB_HOST_PORT:-5173}:80"]
+    depends_on: [backend]
+volumes:
+  evidencerag-data: {}

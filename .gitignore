@@ -1,0 +1,42 @@
+**/target/
+**/node_modules/
+**/dist/
+**/.vite/
+**/coverage/
+**/.pytest_cache/
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+service-account*.json
+
+# Local database exports and runtime artifacts
+*.dump
+*.backup
+*.sql.gz
+/logs/
+/.codex/
+/tmp/
+
+# Personal documents and local data must never enter the public repository
+*.pdf
+*.docx
+*.sqlite
+*.sqlite3
+*.db
+
+# Local tool state
+**/.codex/
+
+**/*.tsbuildinfo

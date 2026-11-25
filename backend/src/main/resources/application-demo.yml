@@ -1,0 +1,12 @@
+app:
+  cors-origin: ${APP_CORS_ORIGIN}
+  document-visibility: public-demo
+  embedding-model: ${APP_EMBEDDING_MODEL:${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}}
+  public-demo-corpus-only: true
+  rate-limit-per-minute: ${APP_REQUESTS_PER_MINUTE:8}
+  max-concurrent-ai-requests: ${APP_MAX_CONCURRENT_AI_REQUESTS:1}
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

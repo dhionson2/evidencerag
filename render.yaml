@@ -1,0 +1,65 @@
+services:
+  - type: web
+    name: evidencerag-api
+    runtime: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./infra/Dockerfile.backend
+    dockerContext: .
+    autoDeployTrigger: 'off'
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: demo
+      - key: CHAT_PROVIDER
+        value: google-genai
+      - key: EMBEDDING_PROVIDER
+        value: google-genai
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: FLYWAY_URL
+        sync: false
+      - key: FLYWAY_USER
+        sync: false
+      - key: FLYWAY_PASSWORD
+        sync: false
+      - key: APP_CORS_ORIGIN
+        sync: false
+      - key: APP_EMBEDDING_DIMENSIONS
+        value: "768"
+      - key: GEMINI_EMBEDDING_MODEL
+        value: gemini-embedding-001
+      - key: APP_EMBEDDING_MODEL
+        value: gemini-embedding-001
+      - key: APP_PUBLIC_DEMO_CORPUS_ONLY
+        value: "true"
+      - key: APP_DOCUMENT_VISIBILITY
+        value: public-demo
+      - key: APP_REQUESTS_PER_MINUTE
+        value: "8"
+      - key: APP_MAX_CONCURRENT_AI_REQUESTS
+        value: "1"
+      - key: DB_POOL_MAX_SIZE
+        value: "3"
+      - key: DB_POOL_MIN_IDLE
+        value: "0"
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=55 -XX:InitialRAMPercentage=15 -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m
+
+  - type: web
+    name: evidencerag-demo
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: ./frontend/dist
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: VITE_DEMO_MODE
+        value: "true"
+      - key: VITE_API_BASE_URL
+        value: https://evidencerag-api.onrender.com

@@ -1,0 +1,209 @@
+{
+  "notice": "Lexical baseline only; does not invoke embeddings, vector search, generation, citation validation, or safety classifier.",
+  "case_count": 25,
+  "answerable_retrieval_top1_coverage": 0.85,
+  "expected_evidence_term_coverage_given_lexical_top1": 0.8929,
+  "unanswerable_no_retrieval_rate": 0.2,
+  "cases": [
+    {
+      "id": "E01",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": false,
+      "expected_evidence_terms_found": 3
+    },
+    {
+      "id": "E02",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E03",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E04",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E05",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E06",
+      "tag": "answerable",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E07",
+      "tag": "answerable",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E08",
+      "tag": "answerable",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E09",
+      "tag": "answerable",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 2
+    },
+    {
+      "id": "E10",
+      "tag": "answerable",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E11",
+      "tag": "answerable",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E12",
+      "tag": "answerable",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E13",
+      "tag": "answerable",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": false,
+      "expected_evidence_terms_found": 0
+    },
+    {
+      "id": "E14",
+      "tag": "answerable",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E15",
+      "tag": "near-match",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E16",
+      "tag": "similar-documents",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": false,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E17",
+      "tag": "contradiction",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 3
+    },
+    {
+      "id": "E18",
+      "tag": "prompt-injection",
+      "expected_document": null,
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": null,
+      "expected_evidence_terms_found": null
+    },
+    {
+      "id": "E19",
+      "tag": "injection-as-data",
+      "expected_document": "procedimento-administrativo-ficticio.md",
+      "lexical_top1": "procedimento-administrativo-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E20",
+      "tag": "out-of-scope",
+      "expected_document": null,
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": null,
+      "expected_evidence_terms_found": null
+    },
+    {
+      "id": "E21",
+      "tag": "unanswerable",
+      "expected_document": null,
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": null,
+      "expected_evidence_terms_found": null
+    },
+    {
+      "id": "E22",
+      "tag": "unanswerable",
+      "expected_document": null,
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": null,
+      "expected_evidence_terms_found": null
+    },
+    {
+      "id": "E23",
+      "tag": "out-of-scope",
+      "expected_document": null,
+      "lexical_top1": null,
+      "retrieval_hit": null,
+      "expected_evidence_terms_found": null
+    },
+    {
+      "id": "E24",
+      "tag": "similar-documents",
+      "expected_document": "politica-operacional-ficticia.md",
+      "lexical_top1": "politica-operacional-ficticia.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 1
+    },
+    {
+      "id": "E25",
+      "tag": "answerable",
+      "expected_document": "contrato-servicos-ficticio.md",
+      "lexical_top1": "contrato-servicos-ficticio.md",
+      "retrieval_hit": true,
+      "expected_evidence_terms_found": 2
+    }
+  ]
+}

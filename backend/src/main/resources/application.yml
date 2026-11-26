@@ -28,17 +28,30 @@ spring:
     placeholders:
       embedding_dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
   ai:
+    retry:
+      max-attempts: ${SPRING_AI_RETRY_MAX_ATTEMPTS:1}
+    tools:
+      limits:
+        max-total-tool-calls: ${BANKING_AI_MAX_TOOL_CALLS:4}
+        on-limit-exceeded: ${BANKING_AI_TOOL_LIMIT_ACTION:THROW}
     model:
-      chat: ${CHAT_PROVIDER:ollama}
+      # Spring AI selects adapter implementations here. Groq uses the OpenAI
+      # adapter, so a Groq preview sets SPRING_AI_MODEL_CHAT=openai while
+      # CHAT_PROVIDER remains "groq" for application telemetry.
+      chat: ${SPRING_AI_MODEL_CHAT:${CHAT_PROVIDER:ollama}}
       embedding: ${EMBEDDING_PROVIDER:ollama}
     openai:
       api-key: ${OPENAI_API_KEY:}
-      timeout: 45s
-      max-retries: 1
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+      timeout: ${SPRING_AI_OPENAI_TIMEOUT:45s}
+      max-retries: ${SPRING_AI_OPENAI_MAX_RETRIES:0}
       chat:
-        model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+        # Chat-only overrides keep the Groq key and endpoint away from the
+        # independent OpenAI embedding client and the existing vector store.
+        api-key: ${SPRING_AI_OPENAI_CHAT_API_KEY:${OPENAI_API_KEY:}}
+        base-url: ${SPRING_AI_OPENAI_CHAT_BASE_URL:${OPENAI_BASE_URL:https://api.openai.com}}
+        model: ${SPRING_AI_OPENAI_CHAT_MODEL:${OPENAI_CHAT_MODEL:gpt-4o-mini}}
         temperature: 0.1
-        max-completion-tokens: 600
       embedding:
         model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
     ollama:
@@ -58,7 +71,6 @@ spring:
           model: ${GEMINI_CHAT_MODEL:gemini-2.5-flash}
           temperature: 0.1
           max-output-tokens: 600
-          response-mime-type: application/json
         embedding:
           api-key: ${GEMINI_API_KEY:}
           text:
@@ -84,6 +96,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 app:
+  banking:
+    session-cookie-secure: ${BANK_DEMO_COOKIE_SECURE:true}
+    analyst-enabled: ${APP_BANKING_ANALYST_ENABLED:false}
+    ai:
+      max-interactions-per-session: ${BANKING_AI_MAX_INTERACTIONS:20}
+      timeout-seconds: ${BANKING_AI_TIMEOUT_SECONDS:30}
   security:
     token: ${APP_API_TOKEN:}
   cors-origin: ${APP_CORS_ORIGIN:http://localhost:5173}
@@ -98,4 +116,4 @@ app:
   embedding-model: ${APP_EMBEDDING_MODEL:${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}}
   embedding-dimensions: ${APP_EMBEDDING_DIMENSIONS:768}
   public-demo-corpus-only: ${APP_PUBLIC_DEMO_CORPUS_ONLY:false}
-  max-concurrent-ai-requests: ${APP_MAX_CONCURRENT_AI_REQUESTS:2}
+  max-concurrent-ai-requests: ${APP_MAX_CONCURRENT_AI_REQUESTS:1}

@@ -21,7 +21,7 @@ public class RequestSecurityConfiguration {
         return new WebMvcConfigurer() {
             @Override public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**").allowedOrigins(properties.corsOrigin())
-                        .allowedMethods("GET", "POST", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("Content-Type", "X-Api-Key", "X-Request-Id").maxAge(3600);
             }
         };

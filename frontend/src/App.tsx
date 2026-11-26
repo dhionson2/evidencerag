@@ -2,8 +2,16 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowUp, BookOpen, Check, FilePlus2, FileText, KeyRound, LoaderCircle, MessageSquareText, ShieldCheck, Trash2, UploadCloud, X } from 'lucide-react';
 import { askQuestion, listDocuments, removeDocument, uploadDocument, type DocumentItem, type QueryResult } from './lib/api';
 import { EvidencePanel } from './components/EvidencePanel';
+import { BankingDemo } from './BankingDemo';
+import { EvidenceRagPortfolio } from './portfolio/EvidenceRagPortfolio';
 
 export default function App() {
+  if (__PORTFOLIO_BUILD__) return <EvidenceRagPortfolio />;
+  if (__BANKING_LIVE_MODE__ || import.meta.env.VITE_BANKING_DEMO === 'true') return <BankingDemo />;
+  return <EvidenceRagApp />;
+}
+
+function EvidenceRagApp() {
   const publicDemo = import.meta.env.VITE_DEMO_MODE === 'true';
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [question, setQuestion] = useState('');

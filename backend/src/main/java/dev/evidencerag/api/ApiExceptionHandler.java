@@ -2,6 +2,8 @@ package dev.evidencerag.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import dev.evidencerag.infrastructure.RequestIdFilter;
+import dev.evidencerag.banking.domain.AnalystExperienceDisabledException;
+import dev.evidencerag.banking.domain.DemoSessionExpiredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,6 +43,14 @@ public class ApiExceptionHandler {
     ResponseEntity<ApiDtos.ErrorResponse> status(ResponseStatusException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
         return response(status, status == HttpStatus.NOT_FOUND ? "NOT_FOUND" : "REQUEST_REJECTED", ex.getReason(), request);
+    }
+    @ExceptionHandler(AnalystExperienceDisabledException.class)
+    ResponseEntity<ApiDtos.ErrorResponse> analystDisabled(AnalystExperienceDisabledException ex, HttpServletRequest request) {
+        return response(HttpStatus.NOT_FOUND, "EXPERIENCE_DISABLED", ex.getMessage(), request);
+    }
+    @ExceptionHandler(DemoSessionExpiredException.class)
+    ResponseEntity<ApiDtos.ErrorResponse> demoSessionExpired(DemoSessionExpiredException ex, HttpServletRequest request) {
+        return response(HttpStatus.GONE, "SESSION_EXPIRED", ex.getMessage(), request);
     }
     @ExceptionHandler(RestClientResponseException.class)
     ResponseEntity<ApiDtos.ErrorResponse> providerResponse(RestClientResponseException ex, HttpServletRequest request) {

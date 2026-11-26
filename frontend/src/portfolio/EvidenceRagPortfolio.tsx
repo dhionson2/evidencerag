@@ -78,15 +78,46 @@ export function EvidenceRagPortfolio() {
         </section>
 
         <section id="architecture" className="portfolio-section portfolio-architecture-section" aria-labelledby="architecture-title">
-          <div className="portfolio-section-heading"><div><span className="portfolio-overline">ARQUITETURA REAL</span><h2 id="architecture-title">Do pedido à evidência.</h2></div><p>O portfólio reproduz registros. O sistema real abaixo é executado localmente e mantém o EvidenceRAG original.</p></div>
-          <div className="portfolio-architecture-flow" role="list" aria-label="Fluxo da arquitetura de produção local">
-            {['React', 'Spring Boot', 'Spring AI', 'Tool Calling', 'PostgreSQL', 'Validação de evidências'].map((part, index) => <div className="portfolio-flow-part" role="listitem" key={part}><span>{String(index + 1).padStart(2, '0')}</span><strong>{part}</strong>{index < 5 && <ArrowRight className="portfolio-flow-arrow" size={16}/>}</div>)}
-          </div>
-          <div className="portfolio-architecture-notes">
-            <article><span className="portfolio-note-symbol"><Database size={18}/></span><h3>Dados estruturados</h3><p>Ferramentas Java consultam contas, transações e alertas fictícios no PostgreSQL; cálculos e filtros determinísticos ficam no backend.</p></article>
-            <article><span className="portfolio-note-symbol"><Layers3 size={18}/></span><h3>Recuperação documental</h3><p>O EvidenceRAG original usa embeddings e pgvector para trechos documentais. As políticas bancárias demonstrativas usam PostgreSQL full-text — não um índice vetorial dedicado.</p></article>
-            <article><span className="portfolio-note-symbol"><ShieldCheck size={18}/></span><h3>Resposta com limites</h3><p>O backend valida referências contra os resultados recuperados. Falhas do provedor e insuficiência de dados são estados distintos; o fallback é identificado como determinístico.</p></article>
-          </div>
+          <div className="portfolio-section-heading"><div><span className="portfolio-overline">ARQUITETURA REAL</span><h2 id="architecture-title">Do pedido à evidência.</h2></div><p>O diagrama mostra o sistema bancário em execução local. Esta página é estática e apenas reproduz execuções registradas.</p></div>
+          <figure className="portfolio-architecture-map" aria-labelledby="architecture-map-title">
+            <figcaption className="portfolio-map-caption"><span>CAMINHO DE UMA CONSULTA BANCÁRIA</span><strong id="architecture-map-title">O backend controla o acesso aos dados e confere cada fonte antes de responder.</strong></figcaption>
+            <ol className="portfolio-architecture-flow" aria-label="Etapas da pergunta até a consulta de dados">
+              {[
+                { title: 'React', label: 'INTERFACE', detail: 'Recebe a pergunta e mostra resposta, tipo de execução e fontes.' },
+                { title: 'Spring Boot', label: 'CONTROLE', detail: 'Valida sessão, modo Cliente/Analista e limites da interação.' },
+                { title: 'Spring AI', label: 'ORQUESTRAÇÃO', detail: 'Envia contexto autorizado ao provedor e recebe a decisão de ferramenta.' },
+                { title: 'Ferramenta Java', label: 'EXECUÇÃO TIPADA', detail: 'Valida parâmetros e escopo da sessão; não aceita SQL do modelo.' },
+                { title: 'PostgreSQL', label: 'DADOS FICTÍCIOS', detail: 'Consulta as linhas necessárias para a ferramenta selecionada.' },
+              ].map((node, index, nodes) => <li className="portfolio-architecture-node" key={node.title}>
+                <div className="portfolio-node-top"><span>{String(index + 1).padStart(2, '0')}</span><small>{node.label}</small></div>
+                <strong>{node.title}</strong><p>{node.detail}</p>
+                {index < nodes.length - 1 && <ArrowRight className="portfolio-node-arrow" size={18} aria-hidden="true"/>}
+              </li>)}
+            </ol>
+
+            <div className="portfolio-tool-cycle" aria-label="O resultado da ferramenta retorna ao modelo e a resposta é verificada pelo backend">
+              <div className="portfolio-cycle-heading"><span className="portfolio-cycle-icon"><Workflow size={18}/></span><div><strong>O ciclo de tool calling</strong><p>Uma chamada pode fazer mais de uma rodada; a resposta da ferramenta volta ao modelo.</p></div></div>
+              <ol className="portfolio-cycle-steps">
+                <li><span>1</span><div><strong>Modelo pede uma ferramenta</strong><small>Somente ferramentas permitidas para aquele modo.</small></div></li>
+                <li><span>2</span><div><strong>Java consulta o PostgreSQL</strong><small>A sessão define quais registros podem ser lidos.</small></div></li>
+                <li><span>3</span><div><strong>Resultado retorna ao modelo</strong><small>O modelo redige a resposta usando o retorno recebido.</small></div></li>
+                <li><span>4</span><div><strong>Backend valida as referências</strong><small>IDs precisam corresponder às evidências recuperadas.</small></div></li>
+              </ol>
+              <div className="portfolio-answer-modes"><span className="portfolio-mode-badge mode-ai">AI_TOOL_LOOP · ferramenta escolhida pelo modelo</span><span className="portfolio-mode-badge mode-deterministic">DETERMINISTIC_FALLBACK · cálculo Java identificado como determinístico</span></div>
+            </div>
+
+            <div className="portfolio-data-paths" aria-label="Caminhos distintos de recuperação de dados">
+              <article className="portfolio-data-path banking-path"><div className="portfolio-data-path-heading"><span className="portfolio-note-symbol"><Database size={18}/></span><div><span className="portfolio-overline">DADOS ESTRUTURADOS</span><h3>Sandbox bancário</h3></div></div>
+                <div className="portfolio-mini-flow"><span>Ferramenta Java</span><ArrowRight size={15}/><span>PostgreSQL</span></div>
+                <p>Contas, movimentações, alertas e propostas fictícias. O backend aplica o escopo da sessão e calcula totais; nenhuma operação financeira real é executada.</p>
+                <div className="portfolio-data-note"><strong>Políticas bancárias</strong><span>Busca PostgreSQL full-text, com versão e seção; não usa um índice vetorial dedicado.</span></div>
+              </article>
+              <article className="portfolio-data-path rag-path"><div className="portfolio-data-path-heading"><span className="portfolio-note-symbol"><Layers3 size={18}/></span><div><span className="portfolio-overline">RAG DOCUMENTAL ORIGINAL</span><h3>EvidenceRAG</h3></div></div>
+                <div className="portfolio-mini-flow"><span>Pergunta</span><ArrowRight size={15}/><span>Embedding</span><ArrowRight size={15}/><span>pgvector</span><ArrowRight size={15}/><span>Trechos</span></div>
+                <p>O retrieval documental usa embeddings e pgvector. O backend valida os trechos recuperados antes de compor citações; provider/modelo de embeddings é independente do chat.</p>
+              </article>
+            </div>
+          </figure>
         </section>
 
         <section id="engineering" className="portfolio-engineering">

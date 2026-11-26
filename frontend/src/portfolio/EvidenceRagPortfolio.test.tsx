@@ -46,4 +46,16 @@ describe('EvidenceRagPortfolio', () => {
     expect(screen.getByRole('navigation', { name: 'Navegação principal' })).toBeInTheDocument();
     expect(screen.getByText('Detalhes técnicos da execução')).toBeInTheDocument();
   });
+
+  it('explains the real tool loop and separates banking data from document RAG', () => {
+    render(<EvidenceRagPortfolio/>);
+    const architecture = screen.getByRole('figure', { name: /O backend controla o acesso aos dados/ });
+
+    expect(within(architecture).getByText('O ciclo de tool calling')).toBeInTheDocument();
+    expect(within(architecture).getByText('Resultado retorna ao modelo')).toBeInTheDocument();
+    expect(within(architecture).getByText(/AI_TOOL_LOOP · ferramenta escolhida pelo modelo/)).toBeInTheDocument();
+    expect(within(architecture).getByText(/DETERMINISTIC_FALLBACK · cálculo Java identificado como determinístico/)).toBeInTheDocument();
+    expect(within(architecture).getByText(/Busca PostgreSQL full-text/)).toBeInTheDocument();
+    expect(within(architecture).getByText(/embeddings e pgvector/)).toBeInTheDocument();
+  });
 });
